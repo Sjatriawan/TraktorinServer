@@ -3,7 +3,9 @@ package com.mobile.routes
 import com.mobile.data.repository.user.UserRepository
 import com.mobile.data.models.User
 import com.mobile.data.request.CreateAccountRequest
+import com.mobile.data.request.LoginRequest
 import com.mobile.response.BasicApiResponse
+import com.mobile.util.ApiResponseMessages
 import com.mobile.util.ApiResponseMessages.FIELDS_BLANK
 import com.mobile.util.ApiResponseMessages.USER_ALREADY_EXIST
 import io.ktor.http.*
@@ -13,8 +15,7 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 
 fun Route.createUserRoutes(userRepository: UserRepository) {
-    route("/api/user/create"){
-     post {
+     post("api/user/create") {
       val request = call.receiveOrNull<CreateAccountRequest>() ?: kotlin.run {
           call.respond(HttpStatusCode.BadRequest)
           return@post
@@ -53,5 +54,37 @@ fun Route.createUserRoutes(userRepository: UserRepository) {
              )
          )
      }
+}
+
+fun Route.loginRequest(userRepository:UserRepository){
+    post("api/user/login"){
+
+        val request = call.receiveOrNull<LoginRequest>() ?: kotlin.run {
+            call.respond(HttpStatusCode.BadRequest)
+            return@post
+        }
+
+        if(request.email.isBlank() ||  request.password.isBlank()) {
+            call.respond(
+                HttpStatusCode.BadRequest
+            )
+            return@post
+        }
+
+        val isPasswordCorrect = userRepository.doesPasswordForUserMatch(
+            email = request.email,
+            enteredPassword = request.password
+        )
+        if (isPasswordCorrect){
+            call.respond(
+                HttpStatusCode.OK,
+                BasicApiResponse(successful = true)
+            )
+        }else{
+            call.respond(
+                HttpStatusCode.OK,
+                BasicApiResponse(successful = false,message = ApiResponseMessages.INCORRECT_PASSWORD)
+            )
+        }
     }
 }
