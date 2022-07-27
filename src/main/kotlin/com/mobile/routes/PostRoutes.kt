@@ -30,9 +30,9 @@ fun Route.createPostRoute(
                     userId = request.userId
                 )
 
-
-            if (isEmailByUser){
-                call.respond(HttpStatusCode.Unauthorized, "You are not who you are")
+            //BUG MERESAHKAN
+            if (!isEmailByUser){
+                call.respond(HttpStatusCode.Unauthorized, "You are monkey")
                 return@post
             }
 
