@@ -3,7 +3,6 @@ package com.mobile.data.repository.post
 import com.mobile.data.models.Post
 import com.mobile.data.models.User
 import org.litote.kmongo.coroutine.CoroutineDatabase
-import org.litote.kmongo.coroutine.insertOne
 
 class PostRepositoryImpl(
     db:CoroutineDatabase
@@ -21,12 +20,15 @@ class PostRepositoryImpl(
     }
 
     override suspend fun deletePost(postId: String) {
-        posts.deleteOneById(postId )
+        posts.deleteOneById(postId)
     }
 
-    override suspend fun getPost(userId: String){
-        posts.findOneById(posts)
+    override suspend fun getListPost():List<Post> {
+        return posts.find()
+            .toList()
+        }
+
+    override suspend fun getPost(postId: String): Post? {
+        return posts.findOneById(postId)
     }
-
-
 }

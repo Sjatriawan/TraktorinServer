@@ -8,5 +8,7 @@ interface PostRepository {
 
     suspend fun deletePost(postId:String)
 
-    suspend fun getPost(postId:String)
+    suspend fun getListPost():List<Post>
+
+    suspend fun getPost(postId: String):Post?
 }
