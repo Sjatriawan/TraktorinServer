@@ -61,7 +61,7 @@ fun Route.deleteFavoriteRoute(
     userService: UserService
 ){
     authenticate {
-        delete ("api/favorite") {
+        delete ("api/favorite/delete") {
             val request = call.receiveOrNull<DeleteFavoriteRequest>() ?: kotlin.run {
                 call.respond(HttpStatusCode.BadRequest)
                 return@delete

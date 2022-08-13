@@ -3,6 +3,7 @@ package com.mobile.data.repository.post
 import com.mobile.data.models.Post
 import com.mobile.data.models.User
 import org.litote.kmongo.coroutine.CoroutineDatabase
+import org.litote.kmongo.regex
 
 class PostRepositoryImpl(
     db:CoroutineDatabase
@@ -30,5 +31,11 @@ class PostRepositoryImpl(
 
     override suspend fun getPost(postId: String): Post? {
         return posts.findOneById(postId)
+    }
+
+    override suspend fun searchPostWithServiceBy(query: String): List<Post> {
+        return posts.find(
+            Post::service_by regex Regex("(?i).*$query.*")
+        ).toList()
     }
 }

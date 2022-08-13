@@ -1,5 +1,7 @@
 package com.mobile.routes
 
+import com.mobile.data.models.Post
+import com.mobile.data.request.BookingRequest
 import com.mobile.data.request.CreatePostRequest
 import com.mobile.data.request.DeletePostRequest
 import com.mobile.response.BasicApiResponse
@@ -8,6 +10,7 @@ import com.mobile.services.UserService
 import com.mobile.util.ApiResponseMessages
 import com.mobile.util.QueryParams
 import com.mobile.util.ifEmailBelongsToUser
+import io.ktor.client.request.*
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
@@ -94,6 +97,29 @@ fun Route.deletePostRoute(
         }
 
     }
+}
+
+fun Route.searchPost(
+    postService: PostService
+){
+  authenticate {
+      get("api/post/search") {
+          val query = call.parameters[QueryParams.PARAM_QUERY]
+          if (query.isNullOrBlank()){
+              call.respond(
+                  HttpStatusCode.OK,
+                  listOf<Post>()
+              )
+              return@get
+          }
+          val searchResult = postService.searchPostByServiced(query)
+          call.respond(
+              HttpStatusCode.OK,
+              searchResult
+          )
+
+      }
+  }
 }
 
 

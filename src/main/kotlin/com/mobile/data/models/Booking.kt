@@ -4,12 +4,10 @@ import org.bson.codecs.pojo.annotations.BsonId
 import org.bson.types.ObjectId
 
 data class Booking(
-    val name:String,
-    val timestamp:Long,
-    val methodPay:Int,
-    val lat:Double,
-    val lng:Double,
-    val price:Double,
+    val userId:String,
+    val postId: String,
+    val are: Double,
+    val timestamp: Long,
     @BsonId
     val id: String = ObjectId().toString()
 )

@@ -24,3 +24,19 @@ suspend fun PipelineContext<Unit, ApplicationCall>.ifEmailBelongsToUser(
         call.respond(HttpStatusCode.Unauthorized, "Not Credential")
     }
 }
+
+suspend fun PipelineContext<Unit, ApplicationCall>.ifEmailNotBelongToUser(
+    userId: String,
+    validateEmail: suspend (email:String , userId:String) -> Boolean,
+    onSuccess: suspend () -> Unit
+){
+    val isEmailByUser = validateEmail(
+        call.principal<JWTPrincipal>()?.email ?: "",
+        userId
+    )
+    if (!isEmailByUser){
+        onSuccess()
+    } else {
+        call.respond(HttpStatusCode.Unauthorized, "Not Credential")
+    }
+}

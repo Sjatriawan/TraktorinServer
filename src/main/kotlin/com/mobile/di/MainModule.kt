@@ -1,12 +1,15 @@
 package com.mobile.di
 
 import com.mobile.data.models.Favorite
+import com.mobile.data.repository.booking.BookingRepository
+import com.mobile.data.repository.booking.BookingRepositoryImpl
 import com.mobile.data.repository.favorite.FavoriteRepository
 import com.mobile.data.repository.favorite.FavoriteRepositoryImpl
 import com.mobile.data.repository.post.PostRepository
 import com.mobile.data.repository.post.PostRepositoryImpl
 import com.mobile.data.repository.user.UserRepository
 import com.mobile.data.repository.user.UserRepositoryImpl
+import com.mobile.services.BookingService
 import com.mobile.services.FavoriteService
 import com.mobile.services.PostService
 import com.mobile.services.UserService
@@ -34,6 +37,9 @@ val mainModule = module {
     single<FavoriteRepository>{
         FavoriteRepositoryImpl(get())
     }
+    single<BookingRepository>{
+        BookingRepositoryImpl(get())
+    }
 
     single {
         FavoriteService(get())
@@ -44,6 +50,10 @@ val mainModule = module {
     }
     single{
         PostService(get())
+    }
+
+    single {
+        BookingService(get(),get())
     }
 
 }

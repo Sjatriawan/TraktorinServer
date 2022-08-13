@@ -1,6 +1,7 @@
 package com.mobile.data.repository.post
 
 import com.mobile.data.models.Post
+import com.mobile.data.models.User
 
 interface PostRepository {
 
@@ -11,4 +12,6 @@ interface PostRepository {
     suspend fun getListPost():List<Post>
 
     suspend fun getPost(postId: String):Post?
+
+    suspend fun searchPostWithServiceBy(query: String):List<Post>
 }
