@@ -1,16 +1,15 @@
 package com.mobile.routes
 
 import com.mobile.data.models.Booking
-import com.mobile.data.models.Post
+import com.mobile.data.repository.booking.BookingRepository
 import com.mobile.data.request.BookingRequest
+import com.mobile.data.request.CancelBookingRequest
 import com.mobile.response.BasicApiResponse
 import com.mobile.services.BookingService
 import com.mobile.services.PostService
 import com.mobile.services.UserService
 import com.mobile.util.ApiResponseMessages
-import com.mobile.util.QueryParams
-import com.mobile.util.ifEmailBelongsToUser
-import com.mobile.util.ifEmailNotBelongToUser
+import com.mobile.util.userId
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
@@ -21,6 +20,7 @@ import io.ktor.server.routing.*
 fun Route.doBooking(
     bookingService: BookingService,
     userService:UserService,
+    postService: PostService
 
 ){
     authenticate {
@@ -30,39 +30,60 @@ fun Route.doBooking(
                 return@post
             }
 
-            ifEmailNotBelongToUser(
-                userId = request.userId,
-                validateEmail = userService::doesEmailBelongToUserId
-            ){
-               when(bookingService.booking(request)){
-                   is BookingService.ValidationEvents.ErrorFieldEmpty -> {
-                       call.respond(
-                           HttpStatusCode.OK,
-                           BasicApiResponse(
-                               successful = false,
-                               message = ApiResponseMessages.FIELDS_BLANK
-                           )
-                       )
-                   }
-                   is BookingService.ValidationEvents.ErrorLength -> {
-                       call.respond(
-                           HttpStatusCode.BadRequest,
-                           BasicApiResponse(
-                               successful = false,
-                               message = ApiResponseMessages.TOO_LONG
-                           )
-                       )
-                   }
-                   is BookingService.ValidationEvents.Success -> {
-                       call.respond(
-                           HttpStatusCode.OK,
-                           BasicApiResponse(
-                               successful = true
-                           )
-                       )
-                   }
-               }
+            val userId = call.userId
+            when(bookingService.booking(userId,request, postService)){
+                is BookingService.ValidationEvents.ErrorFieldEmpty -> {
+                    call.respond(
+                        HttpStatusCode.OK,
+                        BasicApiResponse<Unit>(
+                            successful = false,
+                            message = ApiResponseMessages.FIELDS_BLANK
+                        )
+                    )
+                }
+                is BookingService.ValidationEvents.ErrorLength -> {
+                    call.respond(
+                        HttpStatusCode.BadRequest,
+                        BasicApiResponse<Unit>(
+                            successful = false,
+                            message = ApiResponseMessages.TOO_LONG
+                        )
+                    )
+                }
+                is BookingService.ValidationEvents.Success -> {
+                    call.respond(
+                        HttpStatusCode.OK,
+                        BasicApiResponse<Unit>(
+                            successful = true
+                        )
+                    )
+                }
             }
+        }
+    }
+}
+
+fun Route.cancelBooking(
+    userService: UserService,
+    bookingService: BookingService
+){
+    authenticate {
+        delete ("api/booking/cancel") {
+            val cancel = call.receiveOrNull<CancelBookingRequest>() ?: kotlin.run {
+                call.respond(HttpStatusCode.BadRequest)
+                return@delete
+            }
+            val userId = call.userId
+            val booking = bookingService.cancelBooking(userId,cancel.userId)
+            if (booking == null){
+                call.respond(HttpStatusCode.NotFound,)
+                return@delete
+            }else{
+                bookingService.cancelBooking(userId,bookId = cancel.bookingId)
+                call.respond(HttpStatusCode.OK)
+            }
+
+
         }
     }
 }

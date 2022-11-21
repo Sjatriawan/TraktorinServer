@@ -1,5 +1,6 @@
 package com.mobile.di
 
+import com.google.gson.Gson
 import com.mobile.data.models.Favorite
 import com.mobile.data.repository.booking.BookingRepository
 import com.mobile.data.repository.booking.BookingRepositoryImpl
@@ -53,7 +54,11 @@ val mainModule = module {
     }
 
     single {
-        BookingService(get(),get())
+        BookingService(get())
+    }
+
+    single {
+        Gson()
     }
 
 }

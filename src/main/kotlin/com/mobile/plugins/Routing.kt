@@ -7,6 +7,7 @@ import com.mobile.services.PostService
 import com.mobile.services.UserService
 import io.ktor.server.routing.*
 import io.ktor.server.application.*
+import io.ktor.server.http.content.*
 import org.koin.ktor.ext.inject
 
 fun Application.configureRouting() {
@@ -21,10 +22,15 @@ fun Application.configureRouting() {
     routing {
         //Create account
         createUserRoutes(userService)
+        //Auth
+        authenticate()
         //Login
         loginUser(userService = userService, jwtIssuer = jwtIssuer, jwtAudience = jwtAudience, jwtSecret = jwtSecret)
+
+        //Update profile
+        updateUserRoutes(userService)
         //Create post
-        createPostRoute(postService, userService)
+        createPostRoutes(postService)
         //GetPost
         getListPostRoute(postService)
         //Delete post
@@ -36,7 +42,14 @@ fun Application.configureRouting() {
         //Delete Favorite
         deleteFavoriteRoute(favoriteService,userService)
         //Booking
-        doBooking(bookingService,userService)
+        doBooking(bookingService,userService, postService)
+        //getBooking
+        cancelBooking(userService,bookingService)
+
+        static("/static"){
+            resources("static")
+        }
+
 
 
     }

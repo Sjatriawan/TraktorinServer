@@ -9,7 +9,6 @@ import com.mobile.services.FavoriteService
 import com.mobile.services.UserService
 import com.mobile.util.ApiResponseMessages
 import com.mobile.util.QueryParams
-import com.mobile.util.ifEmailBelongsToUser
 import io.ktor.client.request.*
 import io.ktor.http.*
 import io.ktor.server.application.*
@@ -28,28 +27,23 @@ fun Route.addFavoriteRoute(
                 call.respond(HttpStatusCode.BadRequest)
                 return@post
             }
-            ifEmailBelongsToUser(
-                userId = request.userId,
-                validateEmail = userService::doesEmailBelongToUserId
-            ){
 
-                val addFavoriteSuccess =favoriteService.likePost(userId = request.userId, parentId = request.parentId)
-                if (addFavoriteSuccess){
-                    call.respond(
-                        HttpStatusCode.OK,
-                        BasicApiResponse(
-                            successful = true
-                        )
+            val addFavoriteSuccess =favoriteService.likePost(userId = request.userId, parentId = request.parentId)
+            if (addFavoriteSuccess){
+                call.respond(
+                    HttpStatusCode.OK,
+                    BasicApiResponse<Unit>(
+                        successful = true
                     )
-                }else{
-                    call.respond(
-                        HttpStatusCode.OK,
-                        BasicApiResponse(
-                            successful = false,
-                            message = ApiResponseMessages.USER_NOT_FOUND
-                        )
+                )
+            }else{
+                call.respond(
+                    HttpStatusCode.OK,
+                    BasicApiResponse<Unit>(
+                        successful = false,
+                        message = ApiResponseMessages.USER_NOT_FOUND
                     )
-                }
+                )
             }
         }
 
@@ -66,29 +60,23 @@ fun Route.deleteFavoriteRoute(
                 call.respond(HttpStatusCode.BadRequest)
                 return@delete
             }
-            ifEmailBelongsToUser(
-                userId = request.userId,
-                validateEmail = userService::doesEmailBelongToUserId
-            ){
-
                 val deleteFavoriteSuccess =favoriteService.unlikePost(userId = request.userId, parentId = request.parentId)
                 if (deleteFavoriteSuccess){
                     call.respond(
                         HttpStatusCode.OK,
-                        BasicApiResponse(
+                        BasicApiResponse<Unit>(
                             successful = true
                         )
                     )
                 }else{
                     call.respond(
                         HttpStatusCode.OK,
-                        BasicApiResponse(
+                        BasicApiResponse<Unit>(
                             successful = false,
                             message = ApiResponseMessages.USER_NOT_FOUND
                         )
                     )
                 }
-            }
         }
     }
 }

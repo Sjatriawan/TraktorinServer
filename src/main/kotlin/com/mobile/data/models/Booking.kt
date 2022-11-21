@@ -5,8 +5,10 @@ import org.bson.types.ObjectId
 
 data class Booking(
     val userId:String,
+    val userServiceId:String,
     val postId: String,
     val are: Double,
+    val employee:String,
     val timestamp: Long,
     @BsonId
     val id: String = ObjectId().toString()

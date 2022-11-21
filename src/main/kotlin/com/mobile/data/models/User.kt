@@ -5,9 +5,13 @@ import org.bson.types.ObjectId
 
 data class User(
     val username:String,
+    val fullname:String,
     val password:String,
-    val address:String,
+    val village:String,
+    val district:String,
+    val province:String,
     val userPhone:Long,
+    val postCount: Int = 0,
     val email:String,
     val profileImgUrl:String,
     val lat:Double,

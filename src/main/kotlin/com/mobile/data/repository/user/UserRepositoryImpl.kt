@@ -1,6 +1,7 @@
 package com.mobile.data.repository.user
 
 import com.mobile.data.models.User
+import com.mobile.data.request.UpdateProfileRequest
 import org.litote.kmongo.coroutine.CoroutineDatabase
 import org.litote.kmongo.eq
 
@@ -19,6 +20,31 @@ class UserRepositoryImpl(
 
     override suspend fun getUserByEmail(email: String): User? {
         return users.findOne(User::email eq email)
+    }
+
+    override suspend fun updateProfile(
+        userId: String,
+        profileImgUrl:String,
+        updateProfileRequest: UpdateProfileRequest)
+    : Boolean {
+        val user = getUserById(userId) ?: return false
+        return users.updateOneById(
+            id= userId,
+            update = User(
+                email = user.email,
+                username = user.username,
+                userPhone = updateProfileRequest.userPhone,
+                password = user.password,
+                village = updateProfileRequest.village,
+                district = updateProfileRequest.district,
+                province = updateProfileRequest.province,
+                fullname = updateProfileRequest.fullname,
+                profileImgUrl = profileImgUrl,
+                lat = user.lat,
+                lng = user.lng,
+                id = user.id,
+            )
+        ).wasAcknowledged()
     }
 
     override suspend fun doesPasswordForUserMatch(

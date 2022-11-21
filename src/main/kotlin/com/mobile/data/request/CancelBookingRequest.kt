@@ -1,6 +1,6 @@
 package com.mobile.data.request
 
-data class GetPostRequest (
-    val postId:String,
+data class CancelBookingRequest (
     val userId:String,
+    val bookingId:String
         )

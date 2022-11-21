@@ -6,6 +6,7 @@ import com.mobile.plugins.*
 import org.koin.dsl.module
 import org.koin.ktor.ext.inject
 import org.koin.ktor.plugin.Koin
+import java.nio.file.Paths
 
 fun main(args: Array<String>): Unit =
     io.ktor.server.netty.EngineMain.main(args)
@@ -20,6 +21,9 @@ fun Application.module() {
     configureMonitoring()
     configureHTTP()
     configureSecurity()
+
+    println(Paths.get("").toAbsolutePath().toString())
+
 
 
 }

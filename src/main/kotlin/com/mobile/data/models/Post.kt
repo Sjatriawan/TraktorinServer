@@ -6,6 +6,9 @@ import org.bson.types.ObjectId
 data class Post (
     val service_by:String,
     val userId:String,
+    val village:String,
+    val district:String,
+    val province:String,
     val imageUrl:String,
     val timestamp:Long,
     val description:String,
