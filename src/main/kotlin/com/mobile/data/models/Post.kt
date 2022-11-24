@@ -4,7 +4,7 @@ import org.bson.codecs.pojo.annotations.BsonId
 import org.bson.types.ObjectId
 
 data class Post (
-    val service_by:String,
+    val fullname:String,
     val userId:String,
     val village:String,
     val district:String,

@@ -82,13 +82,15 @@ fun Route.createPostRoutes(
 }
 
 fun Route.getListPostRoute(
-    postService: PostService,
+   postService: PostService,
 ){
     authenticate {
         get("/api/post/get"){
-            call.respond(
-                HttpStatusCode.OK
-            )
+            val page = call.parameters[QueryParams.PARAM_PAGE]?.toIntOrNull() ?: 0
+            val pageSize = call.parameters[QueryParams.PARAM_PAGE_SIZE]?.toIntOrNull() ?: 0
+            val posts = postService.getPostForHome(call.userId,page,pageSize)
+
+            call.respond(HttpStatusCode.OK, posts)
         }
     }
 }

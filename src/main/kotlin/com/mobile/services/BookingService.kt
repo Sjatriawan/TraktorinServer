@@ -19,7 +19,7 @@ class BookingService(
         }
 
         val getPrice = postService.getPost(bookingRequest.postId)?.price ?: ""
-        val employee = postService.getPost(bookingRequest.postId)?.service_by ?:""
+        val employee = postService.getPost(bookingRequest.postId)?.fullname ?:""
         val userServiceId = postService.getPost(bookingRequest.postId)?.userId ?: ""
         bookingRepository.bookingPost(
             Booking(

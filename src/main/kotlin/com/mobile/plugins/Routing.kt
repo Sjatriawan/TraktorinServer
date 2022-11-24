@@ -32,7 +32,7 @@ fun Application.configureRouting() {
         //Create post
         createPostRoutes(postService)
         //GetPost
-        getListPostRoute(postService)
+        getListPostRoute(postService )
         //Delete post
         deletePostRoute(postService,userService)
         //Search Post

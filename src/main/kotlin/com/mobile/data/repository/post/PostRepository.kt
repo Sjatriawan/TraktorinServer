@@ -2,6 +2,7 @@ package com.mobile.data.repository.post
 
 import com.mobile.data.models.Post
 import com.mobile.data.models.User
+import com.mobile.response.PostResponse
 
 interface PostRepository {
 
@@ -9,7 +10,19 @@ interface PostRepository {
 
     suspend fun deletePost(postId:String)
 
-    suspend fun getListPost():List<Post>
+    suspend fun getPostForHome(
+        userId:String,
+        page:Int,
+        pageSize:Int
+    ):List<PostResponse>
+
+    suspend fun getPostForProfile(
+        ownUserId:String,
+        userId:String,
+        page:Int,
+        pageSize:Int
+    ):List<PostResponse>
+
 
     suspend fun getPost(postId: String):Post?
 
