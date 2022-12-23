@@ -43,14 +43,42 @@ class PostRepositoryImpl(
                         id = post.id,
                         userId = ownUserId,
                         imageUrl = post.imageUrl,
+                        fullname = user?.fullname ?: "",
                         description = post.description,
                         isOwnPost = ownUserId == post.userId,
-                        fullname = user?.fullname ?: "",
-                        price = post.price,
+                        price = post?.price ?: "",
                         village = post.village,
                         district = post.district,
                         province = post.province,
                     )
+            }
+    }
+
+    override suspend fun getPostsForProfile(
+        ownUserId: String,
+        userId: String,
+        page: Int,
+        pageSize: Int
+    ): List<PostResponse> {
+        val user = users.findOneById(userId) ?: return emptyList()
+        return posts.find(Post::userId eq userId)
+            .skip(page * pageSize)
+            .limit(pageSize)
+            .descendingSort(Post::timestamp)
+            .toList()
+            .map { post ->
+                PostResponse(
+                    id = post.id,
+                    userId = userId,
+                    imageUrl = post.imageUrl,
+                    description = post.description,
+                    isOwnPost = ownUserId == post.userId,
+                    fullname = post.fullname,
+                    village = post.village,
+                    district = post.district,
+                    province = post.province,
+                    price = post.price
+                )
             }
     }
 
@@ -66,9 +94,9 @@ class PostRepositoryImpl(
                         id = post.id,
                         userId = userId,
                         imageUrl = post.imageUrl,
+                        fullname = user.fullname,
                         description = post.description,
                         isOwnPost = ownUserId == post.userId,
-                        fullname = user?.fullname ?: "",
                         price = post.price,
                         village = post.village,
                         district = post.district,

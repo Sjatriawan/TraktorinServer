@@ -5,25 +5,32 @@ import com.mobile.data.models.Post
 import com.mobile.data.request.CreatePostRequest
 import com.mobile.data.request.DeletePostRequest
 import com.mobile.response.BasicApiResponse
+import com.mobile.response.PostResponse
 import com.mobile.services.PostService
 import com.mobile.services.UserService
 import com.mobile.util.*
+import com.mobile.util.Constant.BASE_URL
+import com.mobile.util.Constant.POST_PICTURE_PATH
 import io.ktor.client.request.*
 import io.ktor.http.*
 import io.ktor.http.content.*
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
+import io.ktor.server.engine.*
+import io.ktor.server.logging.*
+import io.ktor.server.plugins.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
-import kotlinx.coroutines.yield
+import io.ktor.util.cio.*
+import io.ktor.util.logging.*
+import kotlinx.coroutines.*
 import org.koin.ktor.ext.inject
 import java.io.File
+import java.io.IOException
 import java.io.InputStream
 import java.io.OutputStream
+import java.nio.channels.ClosedChannelException
 import kotlin.math.log
 
 fun Route.createPostRoutes(
@@ -38,8 +45,7 @@ fun Route.createPostRoutes(
             multipart.forEachPart { part ->
                 when (part) {
                     is PartData.FormItem -> {
-                        val name = part.name
-                        if(name == "post_data"){
+                        if(part.name == "post_pictures"){
                             createPostRequest = gson.fromJson(
                                 part.value,
                                 CreatePostRequest::class.java
@@ -53,7 +59,8 @@ fun Route.createPostRoutes(
                 }
             }
 
-            val postPictureUrl = "${Constant.BASE_URL}post_pictures/$fileName"
+            val postPictureUrl = "${BASE_URL}post_pictures/$fileName"
+
             createPostRequest?.let { request ->
                 val createPostAcknowledged = postService.createPostIfUserExist(
                     request = request,
@@ -70,12 +77,10 @@ fun Route.createPostRoutes(
                 } else {
                     File("${Constant.POST_PICTURE_PATH}/$fileName").delete()
                     call.respond(HttpStatusCode.InternalServerError)
-
                 }
             } ?: kotlin.run {
                 call.respond(HttpStatusCode.BadRequest)
                 return@post
-
             }
         }
     }
@@ -133,7 +138,7 @@ fun Route.searchPost(
           if (query.isNullOrBlank()){
               call.respond(
                   HttpStatusCode.OK,
-                  listOf<Post>()
+                  listOf<PostResponse>()
               )
               return@get
           }
@@ -147,4 +152,32 @@ fun Route.searchPost(
   }
 }
 
+private fun ApplicationEnvironment.logFailure(call: ApplicationCall, cause: Throwable) {
+    try {
+        val status = call.response.status() ?: "Unhandled"
+        val logString = try {
+            call.request.toLogString()
+        } catch (cause: Throwable) {
+            "(request error: $cause)"
+        }
+
+        when (cause) {
+            is CancellationException -> log.info("$status: $logString, cancelled")
+            is ClosedChannelException -> log.info("$status: $logString, channel closed")
+            is ChannelIOException -> log.info("$status: $logString, channel failed")
+            is IOException -> log.info("$status: $logString, io failed: ${cause.message ?: "unknown error"}")
+            is BadRequestException -> log.debug("$status: $logString", cause)
+            is NotFoundException -> log.debug("$status: $logString", cause)
+            is UnsupportedMediaTypeException -> log.debug("$status: $logString", cause)
+            else -> log.error("$status: $logString", cause)
+        }
+    } catch (oom: OutOfMemoryError) {
+        try {
+            log.error(cause)
+        } catch (oomAttempt2: OutOfMemoryError) {
+            System.err.print("OutOfMemoryError: ")
+            System.err.println(cause.message)
+        }
+    }
+}
 

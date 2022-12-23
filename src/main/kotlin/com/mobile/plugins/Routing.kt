@@ -29,6 +29,8 @@ fun Application.configureRouting() {
 
         //Update profile
         updateUserRoutes(userService)
+        //Get user Profile
+        getUserProfile(userService)
         //Create post
         createPostRoutes(postService)
         //GetPost
@@ -46,10 +48,9 @@ fun Application.configureRouting() {
         //getBooking
         cancelBooking(userService,bookingService)
 
-        static("/static"){
+        static {
             resources("static")
         }
-
 
 
     }

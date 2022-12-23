@@ -1,6 +1,7 @@
 package com.mobile.response
 
 data class ProfileResponse(
+    val userId:String,
     val username:String,
     val fullname:String,
     val village:String,

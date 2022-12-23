@@ -60,5 +60,6 @@ val mainModule = module {
     single {
         Gson()
     }
+    //Anjing
 
 }

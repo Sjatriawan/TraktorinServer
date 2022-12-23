@@ -7,7 +7,7 @@ data class PostResponse(
     val fullname:String,
     val description:String,
     val isOwnPost:Boolean,
-    val price:Double,
+    val price:String,
     val village:String,
     val district:String,
     val province:String,

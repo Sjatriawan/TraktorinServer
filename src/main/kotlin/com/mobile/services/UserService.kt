@@ -26,6 +26,7 @@ class UserService(
     suspend fun getUserProfile(userId: String, callerUserId:String):ProfileResponse? {
         val user = repository.getUserById(userId) ?: return null
         return ProfileResponse(
+            userId = user.id,
             username = user.username,
             fullname = user.fullname,
             village = user.village,

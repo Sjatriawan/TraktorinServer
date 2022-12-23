@@ -1,7 +1,6 @@
 package com.mobile.services
 
 import com.mobile.data.models.Post
-import com.mobile.data.models.User
 import com.mobile.data.repository.post.PostRepository
 import com.mobile.data.request.CreatePostRequest
 import com.mobile.response.PostResponse
@@ -35,7 +34,7 @@ class PostService(
                 userId = userId,
                 timestamp = System.currentTimeMillis(),
                 description = request.description,
-                price = request.price.toDouble(),
+                price = request.price,
                 village = request.village,
                 district = request.district,
                 province = request.province,
@@ -73,9 +72,9 @@ class PostService(
                 id = post.id,
                 userId = post.userId,
                 imageUrl = post.imageUrl,
+                fullname = post.fullname,
                 description = post.description,
                 isOwnPost = true,
-                fullname = post.fullname,
                 price = post.price,
                 village = post.village,
                 district = post.district,
@@ -83,4 +82,12 @@ class PostService(
             )
         }
     }
+
+//    suspend fun getPostForProfile(
+//        userId: String,
+//        page: Int = 0,
+//        pageSize: Int = Constant.DEFAULT_POST_PAGE_SIZE
+//    ):List<PostResponse> {
+//        return repository.getPostForProfile(userId,page,pageSize)
+//    }
 }

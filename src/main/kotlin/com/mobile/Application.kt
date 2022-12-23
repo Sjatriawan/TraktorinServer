@@ -21,7 +21,6 @@ fun Application.module() {
     configureMonitoring()
     configureHTTP()
     configureSecurity()
-
     println(Paths.get("").toAbsolutePath().toString())
 
 
