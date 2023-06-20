@@ -3,6 +3,7 @@ package com.mobile.data.repository.post
 import com.mobile.data.models.Post
 import com.mobile.data.models.User
 import com.mobile.response.PostResponse
+import org.bson.types.ObjectId
 import org.litote.kmongo.coroutine.CoroutineDatabase
 import org.litote.kmongo.eq
 import org.litote.kmongo.ne
@@ -46,7 +47,7 @@ class PostRepositoryImpl(
                         fullname = user?.fullname ?: "",
                         description = post.description,
                         isOwnPost = ownUserId == post.userId,
-                        price = post?.price ?: "",
+                        price = post.price.toString(),
                         village = post.village,
                         district = post.district,
                         province = post.province,
@@ -77,7 +78,7 @@ class PostRepositoryImpl(
                     village = post.village,
                     district = post.district,
                     province = post.province,
-                    price = post.price
+                    price = post.price.toString()
                 )
             }
     }
@@ -97,7 +98,7 @@ class PostRepositoryImpl(
                         fullname = user.fullname,
                         description = post.description,
                         isOwnPost = ownUserId == post.userId,
-                        price = post.price,
+                        price = post.price.toString(),
                         village = post.village,
                         district = post.district,
                         province = post.province,

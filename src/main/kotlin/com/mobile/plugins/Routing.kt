@@ -35,14 +35,21 @@ fun Application.configureRouting() {
         createPostRoutes(postService)
         //GetPost
         getListPostRoute(postService )
+        //Get Post detail
+        getPostDetail(postService)
         //Delete post
         deletePostRoute(postService,userService)
         //Search Post
         searchPost(postService)
+        //Get Order list
+        getListOrderRoute(bookingService)
+        // Get Detail
+        getOrderDetail(bookingService)
         //Add Favorite
         addFavoriteRoute(favoriteService,userService)
         //Delete Favorite
-        deleteFavoriteRoute(favoriteService,userService)
+        //Get favorites
+        getListFavoriteRoute(favoriteService)
         //Booking
         doBooking(bookingService,userService, postService)
         //getBooking

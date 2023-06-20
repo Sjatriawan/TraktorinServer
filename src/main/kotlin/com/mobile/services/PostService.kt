@@ -34,7 +34,7 @@ class PostService(
                 userId = userId,
                 timestamp = System.currentTimeMillis(),
                 description = request.description,
-                price = request.price,
+                price = request.price.toDouble(),
                 village = request.village,
                 district = request.district,
                 province = request.province,
@@ -59,9 +59,7 @@ class PostService(
         return repository.deletePost(postId)
     }
 
-    suspend fun getPost(
-        postId: String
-    ):Post?{
+    suspend fun getPost(postId: String):Post?{
         return repository.getPost(postId)
     }
 
@@ -75,7 +73,7 @@ class PostService(
                 fullname = post.fullname,
                 description = post.description,
                 isOwnPost = true,
-                price = post.price,
+                price = post.price.toString(),
                 village = post.village,
                 district = post.district,
                 province = post.province,

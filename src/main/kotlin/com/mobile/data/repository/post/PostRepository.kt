@@ -34,5 +34,6 @@ interface PostRepository {
 
     suspend fun getPost(postId: String):Post?
 
+
     suspend fun searchPostWithServiceBy(query: String):List<Post>
 }

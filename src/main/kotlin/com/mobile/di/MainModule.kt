@@ -43,7 +43,7 @@ val mainModule = module {
     }
 
     single {
-        FavoriteService(get())
+        FavoriteService(get(), get())
     }
 
     single{

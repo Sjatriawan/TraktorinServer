@@ -152,31 +152,27 @@ fun Route.searchPost(
   }
 }
 
-private fun ApplicationEnvironment.logFailure(call: ApplicationCall, cause: Throwable) {
-    try {
-        val status = call.response.status() ?: "Unhandled"
-        val logString = try {
-            call.request.toLogString()
-        } catch (cause: Throwable) {
-            "(request error: $cause)"
-        }
+fun Route.getPostDetail(
+    postService: PostService
+){
+    authenticate{
+        get("api/post/detail") {
+            val postId = call.parameters["post_id"] ?: kotlin.run {
+                call.respond(
+                    HttpStatusCode.BadRequest)
+                return@get
+            }
 
-        when (cause) {
-            is CancellationException -> log.info("$status: $logString, cancelled")
-            is ClosedChannelException -> log.info("$status: $logString, channel closed")
-            is ChannelIOException -> log.info("$status: $logString, channel failed")
-            is IOException -> log.info("$status: $logString, io failed: ${cause.message ?: "unknown error"}")
-            is BadRequestException -> log.debug("$status: $logString", cause)
-            is NotFoundException -> log.debug("$status: $logString", cause)
-            is UnsupportedMediaTypeException -> log.debug("$status: $logString", cause)
-            else -> log.error("$status: $logString", cause)
-        }
-    } catch (oom: OutOfMemoryError) {
-        try {
-            log.error(cause)
-        } catch (oomAttempt2: OutOfMemoryError) {
-            System.err.print("OutOfMemoryError: ")
-            System.err.println(cause.message)
+            val post = postService.getPost(postId) ?: kotlin.run {
+                call.respond(HttpStatusCode.NotFound)
+            }
+            call.respond(
+                HttpStatusCode.OK,
+                BasicApiResponse(
+                    successful = true,
+                    data = post
+                )
+            )
         }
     }
 }

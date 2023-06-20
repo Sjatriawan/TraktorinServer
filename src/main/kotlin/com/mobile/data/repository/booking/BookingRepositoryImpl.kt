@@ -3,10 +3,8 @@ package com.mobile.data.repository.booking
 import com.mobile.data.models.Booking
 import com.mobile.data.models.Post
 import com.mobile.data.models.User
-import com.mobile.data.request.BookingRequest
-import com.mongodb.client.result.DeleteResult
+import com.mobile.response.OrderResponse
 import org.litote.kmongo.coroutine.CoroutineDatabase
-import org.litote.kmongo.coroutine.insertOne
 import org.litote.kmongo.eq
 
 class BookingRepositoryImpl(
@@ -22,7 +20,7 @@ class BookingRepositoryImpl(
     }
 
     override suspend fun cancelBooking(bookingId: String) {
-          book.deleteOneById(bookingId)
+        book.deleteOneById(bookingId)
     }
 
     override suspend fun getBookingForPost(postId: String): List<Booking> {
@@ -33,5 +31,21 @@ class BookingRepositoryImpl(
         return book.findOneById(bookingId)
     }
 
-
+    override suspend fun getOrderForUser(userId: String, page: Int, pageSize: Int): List<OrderResponse> {
+        return book.find(Booking::userId eq userId)
+            .skip(page * pageSize)
+            .limit(pageSize)
+            .toList()
+            .map { order ->
+                val user = users.findOneById(order.userId)
+                OrderResponse(
+                    userId = userId,
+                    id = order.id,
+                    fullname = order.employee,
+                    price = order.are,
+                    imgOrder = order.imageBooking,
+                    village = order.address,
+                )
+            }
+    }
 }

@@ -12,7 +12,7 @@ data class Post (
     val imageUrl:String,
     val timestamp:Long,
     val description:String,
-    val price:String,
+    val price:Double,
     @BsonId
     val id:String = ObjectId().toString()
     )
