@@ -44,7 +44,7 @@ class PostRepositoryImpl(
                         id = post.id,
                         userId = ownUserId,
                         imageUrl = post.imageUrl,
-                        fullname = user?.fullname ?: "",
+                        fullname = post.fullname,
                         description = post.description,
                         isOwnPost = ownUserId == post.userId,
                         price = post.price.toString(),

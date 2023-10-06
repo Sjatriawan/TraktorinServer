@@ -1,15 +1,13 @@
 package com.mobile.services
 
 import com.mobile.data.models.Booking
-import com.mobile.data.models.Post
 import com.mobile.data.repository.booking.BookingRepository
 import com.mobile.data.request.BookingRequest
-import com.mobile.response.FavoriteResponse
 import com.mobile.response.OrderResponse
 import com.mobile.util.Constant
 
 class BookingService(
-    private val bookingRepository: BookingRepository,
+    private val bookingRepository: BookingRepository
 ) {
     suspend fun cancelBooking(userId: String,bookId:String) {
         return bookingRepository.cancelBooking(bookId)
@@ -35,7 +33,7 @@ class BookingService(
                 employee = employee,
                 userServiceId = userServiceId,
                 address = address,
-                imageBooking = imageBooking
+                imageUrl = imageBooking
             )
         )
         return ValidationEvents.Success

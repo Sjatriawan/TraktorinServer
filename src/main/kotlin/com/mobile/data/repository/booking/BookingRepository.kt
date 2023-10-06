@@ -13,7 +13,7 @@ interface BookingRepository {
 
     suspend fun getBookingForPost(postId: String):List<Booking>
 
-    suspend fun getBooking(bookingId: String):Booking?
+    suspend fun getBooking(orderId: String):Booking?
 
 
     suspend fun getOrderForUser(

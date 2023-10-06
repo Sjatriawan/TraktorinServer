@@ -8,7 +8,7 @@ data class Booking(
     val userServiceId:String,
     val postId: String,
     val are: Double,
-    val imageBooking:String,
+    val imageUrl:String,
     val employee:String,
     val address:String,
     val timestamp: Long,

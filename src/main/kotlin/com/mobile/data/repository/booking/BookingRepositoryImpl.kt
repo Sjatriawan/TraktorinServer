@@ -12,7 +12,6 @@ class BookingRepositoryImpl(
 ):BookingRepository {
     private val book = db.getCollection<Booking>()
     private val users = db.getCollection<User>()
-    private val posts = db.getCollection<Post>()
 
 
     override suspend fun bookingPost(booking: Booking) {
@@ -41,10 +40,10 @@ class BookingRepositoryImpl(
                 OrderResponse(
                     userId = userId,
                     id = order.id,
-                    fullname = order.employee,
-                    price = order.are,
-                    imgOrder = order.imageBooking,
-                    village = order.address,
+                    employee = order.employee,
+                    are = order.are,
+                    imgUrl = order.imageUrl,
+                    address = order.address,
                 )
             }
     }
